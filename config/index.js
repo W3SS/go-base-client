@@ -19,7 +19,7 @@ module.exports = {
 
   build: {
     env: require('./prod.env'),
-    publicPath: '',
+    publicPath: '/',
     productionSourceMap: false,
 
     // Remove unused CSS
@@ -30,7 +30,7 @@ module.exports = {
     env: require('./dev.env'),
     cssSourceMap: true,
     // auto open browser or not
-    openBrowser: true,
+    openBrowser: false,
     publicPath: '/',
     port: 8081,
 
@@ -44,7 +44,23 @@ module.exports = {
     // Proxy your API if using any.
     // Also see /build/script.dev.js and search for "proxy api requests"
     // https://github.com/chimurai/http-proxy-middleware
-    proxyTable: {}
+    proxyTable: {
+      '/auth': {
+        target: 'http://localhost:3000'
+        // changeOrigin: true
+      },
+      '/api': {
+        target: 'http://localhost:3000'
+        // changeOrigin: true
+        // pathRewrite: {
+        //   '^/api': ''
+        // }
+      },
+      '/admin': {
+        target: 'http://localhost:3000'
+        // changeOrigin: true
+      }
+    }
   }
 }
 

@@ -1,6 +1,9 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 
+import Login from '@/Login.vue'
+import Layout from '@/Layout.vue'
+import Account from '@/account/Index.vue'
 import Hello from '@/Hello.vue'
 
 Vue.use(VueRouter)
@@ -8,11 +11,11 @@ Vue.use(VueRouter)
 /*
  * Uncomment this section and use "load()" if you want
  * to lazy load routes.
+*/
 function load (component) {
   // '@' is aliased to src/components
   return () => import(`@/${component}.vue`)
 }
-*/
 
 export default new VueRouter({
   /*
@@ -27,7 +30,36 @@ export default new VueRouter({
    * build publicPath back to '' so Cordova builds work again.
    */
 
+  mode: 'history',
   routes: [
-    { path: '/', component: Hello }
+    { path: '/login', component: Login },
+    { path: '/login/:token', component: Login },
+
+    { path: '/',
+      component: Layout,
+      children: [
+        { path: '', component: Hello }
+      ]
+    },
+
+    // Account
+    { path: '/account',
+      component: Layout,
+      meta: { auth: true },
+      children: [
+        { path: '', component: Account }
+      ]
+    },
+
+    // Admin
+    { path: '/manage',
+      // name: 'Admin', // no name if other component is set as default by empty path ''
+      component: load('admin/Layout'),
+      meta: { auth: { adminOnly: true } },
+      children: [
+        { path: '', component: load('admin/Dashboard') },
+        { path: 'accounts', component: load('admin/accounts/Index') } // , meta: { auth: { scope: ['useradmin'] } } } // needs admin and useradmin role
+      ]
+    }
   ]
 })
